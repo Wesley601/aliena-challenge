@@ -14,6 +14,8 @@ services:
             - 9229:9229
         networks:
             - nesjs-network
+        depends_on:
+            - mysql
         volumes:
             - .:/usr/src/app
             - /usr/src/app/node_modules
@@ -35,6 +37,21 @@ services:
             - .:/usr/src/app
             - /usr/src/app/node_modules
         restart: unless-stopped
-
+    mysql:
+        image: 'mysql:8.0'
+        platform: linux/x86_64
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+            MYSQL_DATABASE: "${DB_DATABASE}"
+            MYSQL_USER: "${DB_USERNAME}"
+            MYSQL_PASSWORD: "${DB_PASSWORD}"
+            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+        volumes:
+            - './data:/var/lib/mysql'
+        networks:
+            - nesjs-network
 networks:
     nesjs-network:
+        driver: bridge

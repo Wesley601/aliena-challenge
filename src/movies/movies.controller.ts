@@ -7,7 +7,7 @@ export class MoviesController {
   constructor(private readonly moviesService: MoviesService) {}
 
   @Post()
-  async create(@Body() createMovieDto: CreateMovieDto) {
-    return await this.moviesService.create(createMovieDto);
+  create(@Body() createMovieDto: CreateMovieDto) {
+    return this.moviesService.create(createMovieDto);
   }
 }

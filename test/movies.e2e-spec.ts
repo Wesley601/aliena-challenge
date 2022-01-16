@@ -5,6 +5,7 @@ import { MoviesModule } from '../src/movies/movies.module';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Movie } from '../src/movies/entities/movie.entity';
 import { EntityNotFoundError } from 'typeorm';
+import { NotFoundExceptionFilter } from '../src/Filters/not-fond.filter';
 
 describe('MovieController (e2e)', () => {
   let app: INestApplication;
@@ -25,6 +26,7 @@ describe('MovieController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+    app.useGlobalFilters(new NotFoundExceptionFilter());
     await app.init();
   });
 
@@ -140,7 +142,7 @@ describe('MovieController (e2e)', () => {
 
     it('should return 404 if the movie was not found', () => {
       const body = {
-        releaseDate: '23-05-2018',
+        releaseDate: '2018-05-23',
         resume: 'any resume',
       };
 

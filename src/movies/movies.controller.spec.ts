@@ -7,6 +7,7 @@ describe('MoviesController', () => {
 
   const mockMovieService = {
     create: jest.fn((dto) => ({ id: Date.now(), ...dto })),
+    update: jest.fn((id, dto) => ({ id, ...dto })),
   };
 
   beforeEach(async () => {
@@ -34,6 +35,25 @@ describe('MoviesController', () => {
       };
 
       const result = await movieController.create(body);
+
+      expect(result).toEqual({
+        id: expect.any(Number),
+        ...body,
+      });
+    });
+  });
+
+  describe('update', () => {
+    it('should update a movie', async () => {
+      const id = '1';
+
+      const body = {
+        title: 'any_title',
+        releaseDate: '2021-01-01',
+        resume: 'resume',
+      };
+
+      const result = await movieController.update(id, body);
 
       expect(result).toEqual({
         id: expect.any(Number),

@@ -9,6 +9,7 @@ describe('MoviesService', () => {
   const mockMovieRepository = {
     create: jest.fn((dto) => dto),
     save: jest.fn((dto) => Promise.resolve({ id: Date.now(), ...dto })),
+    findOneOrFail: jest.fn((id, dto) => Promise.resolve({ id, ...dto })),
   };
 
   beforeEach(async () => {
@@ -37,6 +38,19 @@ describe('MoviesService', () => {
     };
 
     expect(await service.create(body)).toEqual({
+      id: expect.any(Number),
+      ...body,
+    });
+  });
+
+  it('should update a movie record', async () => {
+    const body = {
+      title: 'any_title',
+      releaseDate: '2021-01-01',
+      resume: 'resume',
+    };
+
+    expect(await service.update(Date.now(), body)).toEqual({
       id: expect.any(Number),
       ...body,
     });

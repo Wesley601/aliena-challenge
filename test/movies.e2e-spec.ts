@@ -4,6 +4,7 @@ import * as request from 'supertest';
 import { MoviesModule } from '../src/movies/movies.module';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Movie } from '../src/movies/entities/movie.entity';
+import { EntityNotFoundError } from 'typeorm';
 
 describe('MovieController (e2e)', () => {
   let app: INestApplication;
@@ -11,6 +12,7 @@ describe('MovieController (e2e)', () => {
   const mockMovieRepository = {
     create: jest.fn((dto) => dto),
     save: jest.fn((dto) => Promise.resolve({ id: Date.now(), ...dto })),
+    findOneOrFail: jest.fn((id, dto) => Promise.resolve({ id, ...dto })),
   };
 
   beforeEach(async () => {
@@ -93,6 +95,64 @@ describe('MovieController (e2e)', () => {
         .post('/movies')
         .send(body)
         .expect(400);
+    });
+  });
+  describe('/movies (PATCH)', () => {
+    it('should return 200 if has a correct payload', () => {
+      return request(app.getHttpServer())
+        .patch('/movies/1')
+        .send({
+          title: 'any movie',
+          releaseDate: '2018-05-23',
+          resume: 'any resume',
+        })
+        .expect(200);
+    });
+
+    it('should update a movie if has a correct payload', async () => {
+      const body = {
+        title: 'any movie',
+        releaseDate: '2018-05-23',
+        resume: 'any resume',
+      };
+
+      const response = await request(app.getHttpServer())
+        .patch('/movies/1')
+        .send(body);
+
+      return expect(response.body).toEqual({
+        id: 1,
+        ...body,
+      });
+    });
+
+    it('should return 400 if do not pass the release date in ISO8601 format', () => {
+      const body = {
+        releaseDate: '23-05-2018',
+      };
+
+      return request(app.getHttpServer())
+        .patch('/movies/1')
+        .send(body)
+        .expect(400);
+    });
+
+    it('should return 404 if the movie was not found', () => {
+      const body = {
+        releaseDate: '23-05-2018',
+        resume: 'any resume',
+      };
+
+      jest
+        .spyOn(mockMovieRepository, 'findOneOrFail')
+        .mockRejectedValueOnce(
+          new EntityNotFoundError({ type: new Movie(), name: 'Movie' }, null),
+        );
+
+      return request(app.getHttpServer())
+        .patch('/movies/2')
+        .send(body)
+        .expect(404);
     });
   });
 });

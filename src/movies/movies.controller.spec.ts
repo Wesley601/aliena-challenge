@@ -20,6 +20,7 @@ describe('MoviesController', () => {
     create: jest.fn((dto) => ({ id: Date.now(), ...dto })),
     update: jest.fn((id, dto) => ({ id, ...dto })),
     findOne: jest.fn((id) => movies.find((movie) => movie.id == id)),
+    findAll: jest.fn(() => movies),
   };
 
   beforeEach(async () => {
@@ -81,6 +82,14 @@ describe('MoviesController', () => {
       const result = await movieController.findOne(id);
 
       expect(result).toEqual(movies[0]);
+    });
+  });
+
+  describe('findAll', () => {
+    it('should find all movies', async () => {
+      const result = await movieController.findAll();
+
+      expect(result).toEqual(movies);
     });
   });
 });

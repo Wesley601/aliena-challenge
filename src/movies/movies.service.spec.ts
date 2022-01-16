@@ -22,6 +22,7 @@ describe('MoviesService', () => {
     findOneOrFail: jest.fn((id) =>
       Promise.resolve(movies.find((movie) => movie.id == id)),
     ),
+    find: jest.fn(() => Promise.resolve(movies)),
   };
 
   beforeEach(async () => {
@@ -69,12 +70,10 @@ describe('MoviesService', () => {
   });
 
   it('should find a movie record', async () => {
-    const body = {
-      title: 'any_title',
-      releaseDate: '2021-01-01',
-      resume: 'resume',
-    };
+    expect(await service.findOne(1)).toEqual(movies[0]);
+  });
 
-    expect(await service.update(1, body)).toEqual(movies[0]);
+  it('should find all movies records', async () => {
+    expect(await service.findAll()).toEqual(movies);
   });
 });

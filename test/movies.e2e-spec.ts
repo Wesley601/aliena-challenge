@@ -26,6 +26,7 @@ describe('MovieController (e2e)', () => {
     findOneOrFail: jest.fn((id) =>
       Promise.resolve(movies.find((movie) => movie.id == id)),
     ),
+    find: jest.fn(() => Promise.resolve(movies)),
   };
 
   beforeEach(async () => {
@@ -177,7 +178,7 @@ describe('MovieController (e2e)', () => {
     });
 
     it('should return a movie if has founded', async () => {
-      const response = await request(app.getHttpServer()).patch('/movies/1');
+      const response = await request(app.getHttpServer()).get('/movies/1');
       return expect(response.body).toEqual(movies[0]);
     });
 
@@ -188,6 +189,17 @@ describe('MovieController (e2e)', () => {
           new EntityNotFoundError({ type: new Movie(), name: 'Movie' }, null),
         );
       return request(app.getHttpServer()).get('/movies/22').expect(404);
+    });
+  });
+
+  describe('/movies/ (GET)', () => {
+    it('should return 200 if has found a movie', () => {
+      return request(app.getHttpServer()).get('/movies/').expect(200);
+    });
+
+    it('should return a movie if has founded', async () => {
+      const response = await request(app.getHttpServer()).get('/movies/');
+      return expect(response.body).toEqual(movies);
     });
   });
 });

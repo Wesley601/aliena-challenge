@@ -97,7 +97,8 @@ describe('MovieController (e2e)', () => {
         .expect(400);
     });
   });
-  describe('/movies (PATCH)', () => {
+
+  describe('/movies/:id (PATCH)', () => {
     it('should return 200 if has a correct payload', () => {
       return request(app.getHttpServer())
         .patch('/movies/1')

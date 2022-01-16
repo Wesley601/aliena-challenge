@@ -202,4 +202,25 @@ describe('MovieController (e2e)', () => {
       return expect(response.body).toEqual(movies);
     });
   });
+
+  describe('/movies/ (GET)', () => {
+    it('should return 200 if has delete a movie', () => {
+      return request(app.getHttpServer()).get('/movies/1').expect(200);
+    });
+
+    it('should return a movie resource if has deleted', async () => {
+      const response = await request(app.getHttpServer()).get('/movies/1');
+      return expect(response.body).toEqual(movies[0]);
+    });
+
+    it('should return 404 if the movie was not found', async () => {
+      const response = await request(app.getHttpServer()).get('/movies/1');
+      jest
+        .spyOn(mockMovieRepository, 'findOneOrFail')
+        .mockRejectedValueOnce(
+          new EntityNotFoundError({ type: new Movie(), name: 'Movie' }, null),
+        );
+      return expect(response.body).toEqual(movies[0]);
+    });
+  });
 });

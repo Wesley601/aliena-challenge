@@ -23,6 +23,10 @@ describe('MoviesService', () => {
       Promise.resolve(movies.find((movie) => movie.id == id)),
     ),
     find: jest.fn(() => Promise.resolve(movies)),
+    remove: jest.fn((dto) => {
+      const { title, releaseDate, resume } = dto;
+      return { title, releaseDate, resume };
+    }),
   };
 
   beforeEach(async () => {
@@ -75,5 +79,10 @@ describe('MoviesService', () => {
 
   it('should find all movies records', async () => {
     expect(await service.findAll()).toEqual(movies);
+  });
+
+  it('should remove movie record by id', async () => {
+    const { title, releaseDate, resume } = movies[2];
+    expect(await service.remove(3)).toEqual({ title, releaseDate, resume });
   });
 });

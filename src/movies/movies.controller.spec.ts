@@ -21,6 +21,16 @@ describe('MoviesController', () => {
     update: jest.fn((id, dto) => ({ id, ...dto })),
     findOne: jest.fn((id) => movies.find((movie) => movie.id == id)),
     findAll: jest.fn(() => movies),
+    remove: jest.fn((id) => {
+      const movie = movies.find((movie) => movie.id == id);
+      if (movie) {
+        delete movie.id;
+
+        return movie;
+      }
+
+      return null;
+    }),
   };
 
   beforeEach(async () => {
@@ -90,6 +100,18 @@ describe('MoviesController', () => {
       const result = await movieController.findAll();
 
       expect(result).toEqual(movies);
+    });
+  });
+
+  describe('delete', () => {
+    it('should delete a movie', async () => {
+      const result = await movieController.remove('2');
+      const { title, releaseDate, resume } = movies[1];
+      expect(result).toEqual({
+        title,
+        releaseDate,
+        resume,
+      });
     });
   });
 });

@@ -21,4 +21,9 @@ export class MoviesController {
   findOne(@Param('id') id: string) {
     return this.moviesService.findOne(+id);
   }
+
+  @Get()
+  findAll() {
+    return this.moviesService.findAll();
+  }
 }

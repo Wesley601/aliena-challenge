@@ -28,4 +28,8 @@ export class MoviesService {
   findOne(id: number) {
     return this.movieRepository.findOneOrFail(id);
   }
+
+  findAll() {
+    return this.movieRepository.find();
+  }
 }

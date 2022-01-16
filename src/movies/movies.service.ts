@@ -24,4 +24,8 @@ export class MoviesService {
 
     return this.movieRepository.save(movieToUpdate);
   }
+
+  findOne(id: number) {
+    return this.movieRepository.findOneOrFail(id);
+  }
 }

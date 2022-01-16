@@ -32,4 +32,9 @@ export class MoviesService {
   findAll() {
     return this.movieRepository.find();
   }
+
+  async remove(id: number) {
+    const movieToDelete = await this.movieRepository.findOneOrFail(id);
+    return this.movieRepository.remove(movieToDelete);
+  }
 }

@@ -10,10 +10,22 @@ import { NotFoundExceptionFilter } from '../src/Filters/not-fond.filter';
 describe('MovieController (e2e)', () => {
   let app: INestApplication;
 
+  const movies = [
+    new Movie({
+      id: 1,
+      title: 'Brilho eterno de uma mente sem lembranças',
+      releaseDate: '2004-07-23',
+    }),
+    new Movie({ id: 2, title: 'bee movie', releaseDate: '2007-12-07' }),
+    new Movie({ id: 3, title: 'O Farol', releaseDate: '2020-01-02' }),
+  ];
+
   const mockMovieRepository = {
     create: jest.fn((dto) => dto),
     save: jest.fn((dto) => Promise.resolve({ id: Date.now(), ...dto })),
-    findOneOrFail: jest.fn((id, dto) => Promise.resolve({ id, ...dto })),
+    findOneOrFail: jest.fn((id) =>
+      Promise.resolve(movies.find((movie) => movie.id == id)),
+    ),
   };
 
   beforeEach(async () => {
@@ -156,6 +168,26 @@ describe('MovieController (e2e)', () => {
         .patch('/movies/2')
         .send(body)
         .expect(404);
+    });
+  });
+
+  describe('/movies/:id (GET)', () => {
+    it('should return 200 if has found a movie', () => {
+      return request(app.getHttpServer()).get('/movies/1').expect(200);
+    });
+
+    it('should return a movie if has founded', async () => {
+      const response = await request(app.getHttpServer()).patch('/movies/1');
+      return expect(response.body).toEqual(movies[0]);
+    });
+
+    it('should return 404 if the movie was not found', () => {
+      jest
+        .spyOn(mockMovieRepository, 'findOneOrFail')
+        .mockRejectedValueOnce(
+          new EntityNotFoundError({ type: new Movie(), name: 'Movie' }, null),
+        );
+      return request(app.getHttpServer()).get('/movies/22').expect(404);
     });
   });
 });

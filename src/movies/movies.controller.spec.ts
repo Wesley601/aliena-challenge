@@ -1,13 +1,25 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Movie } from './entities/movie.entity';
 import { MoviesController } from './movies.controller';
 import { MoviesService } from './movies.service';
 
 describe('MoviesController', () => {
   let movieController: MoviesController;
 
+  const movies = [
+    new Movie({
+      id: 1,
+      title: 'Brilho eterno de uma mente sem lembranças',
+      releaseDate: '2004-07-23',
+    }),
+    new Movie({ id: 2, title: 'bee movie', releaseDate: '2007-12-07' }),
+    new Movie({ id: 3, title: 'O Farol', releaseDate: '2020-01-02' }),
+  ];
+
   const mockMovieService = {
     create: jest.fn((dto) => ({ id: Date.now(), ...dto })),
     update: jest.fn((id, dto) => ({ id, ...dto })),
+    findOne: jest.fn((id) => movies.find((movie) => movie.id == id)),
   };
 
   beforeEach(async () => {
@@ -59,6 +71,16 @@ describe('MoviesController', () => {
         id: expect.any(Number),
         ...body,
       });
+    });
+  });
+
+  describe('findOne', () => {
+    it('should find a movie by id', async () => {
+      const id = '1';
+
+      const result = await movieController.findOne(id);
+
+      expect(result).toEqual(movies[0]);
     });
   });
 });

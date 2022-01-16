@@ -6,10 +6,22 @@ import { MoviesService } from './movies.service';
 describe('MoviesService', () => {
   let service: MoviesService;
 
+  const movies = [
+    new Movie({
+      id: 1,
+      title: 'Brilho eterno de uma mente sem lembranças',
+      releaseDate: '2004-07-23',
+    }),
+    new Movie({ id: 2, title: 'bee movie', releaseDate: '2007-12-07' }),
+    new Movie({ id: 3, title: 'O Farol', releaseDate: '2020-01-02' }),
+  ];
+
   const mockMovieRepository = {
     create: jest.fn((dto) => dto),
     save: jest.fn((dto) => Promise.resolve({ id: Date.now(), ...dto })),
-    findOneOrFail: jest.fn((id, dto) => Promise.resolve({ id, ...dto })),
+    findOneOrFail: jest.fn((id) =>
+      Promise.resolve(movies.find((movie) => movie.id == id)),
+    ),
   };
 
   beforeEach(async () => {
@@ -50,9 +62,19 @@ describe('MoviesService', () => {
       resume: 'resume',
     };
 
-    expect(await service.update(Date.now(), body)).toEqual({
+    expect(await service.update(1, body)).toEqual({
       id: expect.any(Number),
       ...body,
     });
+  });
+
+  it('should find a movie record', async () => {
+    const body = {
+      title: 'any_title',
+      releaseDate: '2021-01-01',
+      resume: 'resume',
+    };
+
+    expect(await service.update(1, body)).toEqual(movies[0]);
   });
 });

@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Character } from '../../characters/entities/character.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('movies')
 export class Movie {
@@ -16,8 +17,11 @@ export class Movie {
   title: string;
 
   @Column('text')
-  resume: string;
+  resume?: string;
 
   @Column('datetime', { name: 'release_date' })
   releaseDate: string;
+
+  @OneToMany(() => Character, (character) => character.movie)
+  characters: Character[];
 }

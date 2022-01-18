@@ -10,6 +10,7 @@ module.exports = {
   migrations: ['dist/src/migrations/*{.ts,.js}'],
   migrationsTableName: 'migrations_typeorm',
   migrationsRun: true,
+  logging: process.env.DB_LOGGING,
   cli: {
     migrationsDir: 'src/migrations',
   },

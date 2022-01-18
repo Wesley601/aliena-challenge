@@ -9,9 +9,28 @@ import { Actor } from '../src/actors/entities/actor.entity';
 describe('ActorsController (e2e)', () => {
   let app: INestApplication;
 
+  const actors = [
+    new Actor({
+      id: Date.now(),
+      name: 'any actor 1',
+      birthDate: '1990-03-02',
+    }),
+    new Actor({
+      id: Date.now(),
+      name: 'any actor 2',
+      birthDate: '1990-03-02',
+    }),
+    new Actor({
+      id: Date.now(),
+      name: 'any actor 3',
+      birthDate: '1990-03-02',
+    }),
+  ];
+
   const mockMovieRepository = {
     save: jest.fn((dto) => dto),
     create: jest.fn((dto) => ({ id: Date.now(), ...dto })),
+    find: jest.fn(() => Promise.resolve(actors)),
   };
 
   beforeEach(async () => {
@@ -76,6 +95,17 @@ describe('ActorsController (e2e)', () => {
         .post('/actors')
         .send(body)
         .expect(400);
+    });
+
+    describe('/actors/ (GET)', () => {
+      it('should return 200 if has found a movie', () => {
+        return request(app.getHttpServer()).get('/actors/').expect(200);
+      });
+
+      it('should return all actors', async () => {
+        const response = await request(app.getHttpServer()).get('/actors/');
+        return expect(response.body).toEqual(actors);
+      });
     });
   });
 });

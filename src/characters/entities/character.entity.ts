@@ -10,6 +10,15 @@ import {
 
 @Entity('characters')
 export class Character {
+  constructor(character?: Partial<Character>) {
+    this.id = character?.id;
+    this.name = character?.name;
+    this.manCharacter = character?.manCharacter;
+    this.resume = character?.resume;
+    this.movieId = character?.movieId;
+    this.actorId = character?.actorId;
+  }
+
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -24,6 +33,9 @@ export class Character {
 
   @Column({ type: 'int', name: 'movie_id' })
   movieId: number;
+
+  @Column({ type: 'int', name: 'actor_id' })
+  actorId: number;
 
   @ManyToOne(() => Actor, (actor) => actor.characters)
   @JoinColumn({ name: 'actor_id' })

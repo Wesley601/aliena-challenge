@@ -197,13 +197,13 @@ describe('MovieController (e2e)', () => {
       return request(app.getHttpServer()).get('/movies/').expect(200);
     });
 
-    it('should return a movie if has founded', async () => {
+    it('should return all movies', async () => {
       const response = await request(app.getHttpServer()).get('/movies/');
       return expect(response.body).toEqual(movies);
     });
   });
 
-  describe('/movies/ (GET)', () => {
+  describe('/movies/:id (GET)', () => {
     it('should return 200 if has delete a movie', () => {
       return request(app.getHttpServer()).get('/movies/1').expect(200);
     });

@@ -7,7 +7,10 @@ module.exports = {
   database: process.env.DB_DATABASE,
   synchronize: false,
   entities: ['dist/**/*.entity.js'],
-  migrations: ['dist/migrations/*{.ts,.js}'],
+  migrations: ['dist/src/migrations/*{.ts,.js}'],
   migrationsTableName: 'migrations_typeorm',
   migrationsRun: true,
+  cli: {
+    migrationsDir: 'src/migrations',
+  },
 };

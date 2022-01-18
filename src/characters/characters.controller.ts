@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query } from '@nestjs/common';
 import { CharactersService } from './characters.service';
 import { CreateCharacterDto } from './dto/create-character.dto';
 
@@ -9,5 +9,10 @@ export class CharactersController {
   @Post()
   create(@Body() createCharacterDto: CreateCharacterDto) {
     return this.charactersService.create(createCharacterDto);
+  }
+
+  @Get()
+  findAll(@Query('movieId') movieId = '') {
+    return this.charactersService.findAll(movieId);
   }
 }

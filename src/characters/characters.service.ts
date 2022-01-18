@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Actor } from '../actors/entities/actor.entity';
 import { Character } from '../characters/entities/character.entity';
 import { Movie } from '../movies/entities/movie.entity';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { CreateCharacterDto } from './dto/create-character.dto';
 
 @Injectable()
@@ -37,5 +37,17 @@ export class CharactersService {
     newCharacter.movie = movie;
 
     return this.characterRepository.save(newCharacter);
+  }
+
+  findAll(movieId: string) {
+    const options: FindManyOptions<Character> = {};
+
+    if (movieId) {
+      options.where = {
+        movieId,
+      };
+    }
+
+    return this.characterRepository.find(options);
   }
 }

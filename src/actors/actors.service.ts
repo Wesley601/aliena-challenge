@@ -16,4 +16,8 @@ export class ActorsService {
 
     return this.actorRepository.save(newActor);
   }
+
+  findAll() {
+    return this.actorRepository.find();
+  }
 }

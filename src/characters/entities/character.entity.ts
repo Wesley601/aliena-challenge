@@ -1,5 +1,5 @@
-import { Actor } from 'src/actors/entities/actor.entity';
-import { Movie } from 'src/movies/entities/movie.entity';
+import { Actor } from '../../actors/entities/actor.entity';
+import { Movie } from '../../movies/entities/movie.entity';
 import {
   Column,
   Entity,

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { Movie } from './entities/movie.entity';
@@ -29,8 +29,14 @@ export class MoviesService {
     return this.movieRepository.findOneOrFail(id);
   }
 
-  findAll() {
-    return this.movieRepository.find();
+  findAll(movie?: string) {
+    const options: FindManyOptions<Movie> = {};
+
+    if (movie) {
+      options.where = `title like '%${movie}%'`;
+    }
+
+    return this.movieRepository.find(options);
   }
 
   async remove(id: number) {

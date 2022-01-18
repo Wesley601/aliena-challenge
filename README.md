@@ -15,11 +15,20 @@ nest cli
 
 ```bash
 $ npm install
+$ cp .env.example .env
+```
+## Iniciar banco de dados
+
+```
+ No arquivo .env deve ser configurado as variáveis DB_DATABASE, DB_USERNAME e DB_PASSWORD antes de rodar o docker
 ```
 
 ## Rodando a aplicação
 
 ```bash
+# iniciar o banco de dados
+$ docker-compose up -d mysql
+
 # development
 $ npm run start
 

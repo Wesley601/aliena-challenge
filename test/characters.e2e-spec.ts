@@ -26,7 +26,7 @@ describe('ActorsController (e2e)', () => {
       name: 'any name 2',
       manCharacter: false,
       resume: null,
-      movieId: Date.now(),
+      movieId: 1,
       actorId: Date.now(),
     }),
     new Character({
@@ -43,8 +43,19 @@ describe('ActorsController (e2e)', () => {
     save: jest.fn((dto) => dto),
     create: jest.fn((dto) => ({ id: Date.now(), ...dto })),
     findOneOrFail: jest.fn((id) =>
-      Promise.resolve(characters.find((movie) => movie.id == id)),
+      Promise.resolve(characters.find((character) => character.id == id)),
     ),
+    find: jest.fn((options) => {
+      if (Object.keys(options).length !== 0) {
+        return Promise.resolve(
+          characters.find(
+            (character) => character.movieId == options.where.movieId,
+          ),
+        );
+      }
+
+      return Promise.resolve(characters);
+    }),
   };
 
   const mockActorRepository = {
@@ -273,6 +284,23 @@ describe('ActorsController (e2e)', () => {
       return expect(response.body).toEqual({
         message: `Could not find any entity of type "Movie" matching: ${movieId}`,
       });
+    });
+  });
+  describe('/characters/ (GET)', () => {
+    it('should return 200 if has found a movie', () => {
+      return request(app.getHttpServer()).get('/characters/').expect(200);
+    });
+
+    it('should return all characters', async () => {
+      const response = await request(app.getHttpServer()).get('/characters/');
+      return expect(response.body).toEqual(characters);
+    });
+
+    it('should filter all characters by movieId', async () => {
+      const response = await request(app.getHttpServer()).get(
+        '/characters?movieId=1',
+      );
+      return expect(response.body).toEqual(characters[1]);
     });
   });
 });

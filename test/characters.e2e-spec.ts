@@ -12,7 +12,7 @@ import { Actor } from '../src/actors/entities/actor.entity';
 describe('ActorsController (e2e)', () => {
   let app: INestApplication;
 
-  const movies = [
+  const characters = [
     new Character({
       id: 1,
       name: 'any name 1',
@@ -43,7 +43,7 @@ describe('ActorsController (e2e)', () => {
     save: jest.fn((dto) => dto),
     create: jest.fn((dto) => ({ id: Date.now(), ...dto })),
     findOneOrFail: jest.fn((id) =>
-      Promise.resolve(movies.find((movie) => movie.id == id)),
+      Promise.resolve(characters.find((movie) => movie.id == id)),
     ),
   };
 

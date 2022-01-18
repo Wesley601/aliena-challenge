@@ -26,7 +26,21 @@ describe('MovieController (e2e)', () => {
     findOneOrFail: jest.fn((id) =>
       Promise.resolve(movies.find((movie) => movie.id == id)),
     ),
-    find: jest.fn(() => Promise.resolve(movies)),
+    find: jest.fn((options) => {
+      if (Object.keys(options).length !== 0) {
+        const search: string = options.where;
+        const result = search.substring(
+          search.indexOf('%') + 1,
+          search.lastIndexOf('%'),
+        );
+
+        return Promise.resolve(
+          movies.filter((movie) => movie.title.includes(result)),
+        );
+      }
+
+      return Promise.resolve(movies);
+    }),
   };
 
   beforeEach(async () => {
@@ -200,6 +214,13 @@ describe('MovieController (e2e)', () => {
     it('should return all movies', async () => {
       const response = await request(app.getHttpServer()).get('/movies/');
       return expect(response.body).toEqual(movies);
+    });
+
+    it('should return all movies based on the movie passed', async () => {
+      const response = await request(app.getHttpServer()).get(
+        '/movies?movie=Farol',
+      );
+      return expect(response.body).toEqual([movies[2]]);
     });
   });
 

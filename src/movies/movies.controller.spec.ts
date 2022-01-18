@@ -20,7 +20,9 @@ describe('MoviesController', () => {
     create: jest.fn((dto) => ({ id: Date.now(), ...dto })),
     update: jest.fn((id, dto) => ({ id, ...dto })),
     findOne: jest.fn((id) => movies.find((movie) => movie.id == id)),
-    findAll: jest.fn(() => movies),
+    findAll: jest.fn((name) =>
+      name ? movies.filter((movie) => movie.title.includes(name)) : movies,
+    ),
     remove: jest.fn((id) => {
       const movie = movies.find((movie) => movie.id == id);
       if (movie) {
@@ -97,9 +99,15 @@ describe('MoviesController', () => {
 
   describe('findAll', () => {
     it('should find all movies', async () => {
-      const result = await movieController.findAll();
+      const result = await movieController.findAll('');
 
       expect(result).toEqual(movies);
+    });
+
+    it('should search by movie title', async () => {
+      const result = await movieController.findAll('Farol');
+
+      expect(result).toEqual([movies[2]]);
     });
   });
 

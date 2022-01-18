@@ -22,7 +22,21 @@ describe('MoviesService', () => {
     findOneOrFail: jest.fn((id) =>
       Promise.resolve(movies.find((movie) => movie.id == id)),
     ),
-    find: jest.fn(() => Promise.resolve(movies)),
+    find: jest.fn((options) => {
+      if (Object.keys(options).length !== 0) {
+        const search: string = options.where;
+        const result = search.substring(
+          search.indexOf('%') + 1,
+          search.lastIndexOf('%'),
+        );
+
+        return Promise.resolve(
+          movies.filter((movie) => movie.title.includes(result)),
+        );
+      }
+
+      return Promise.resolve(movies);
+    }),
     remove: jest.fn((dto) => {
       const { title, releaseDate, resume } = dto;
       return { title, releaseDate, resume };
@@ -78,7 +92,11 @@ describe('MoviesService', () => {
   });
 
   it('should find all movies records', async () => {
-    expect(await service.findAll()).toEqual(movies);
+    expect(await service.findAll('')).toEqual(movies);
+  });
+
+  it('should search by movie title', async () => {
+    expect(await service.findAll('Farol')).toEqual([movies[2]]);
   });
 
   it('should remove movie record by id', async () => {
